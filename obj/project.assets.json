@@ -3022,26 +3022,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\samir\\.nuget\\packages\\": {}
+    "C:\\Users\\User\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\arquitectura\\Taller 2.Net\\InventoryManagement\\InventoryManagement.csproj",
+      "projectUniqueName": "D:\\U\\Semestre 7\\Arquitectura de software\\Talleres\\Taller 2.NET\\taller2.net\\InventoryManagement.csproj",
       "projectName": "InventoryManagement",
-      "projectPath": "C:\\arquitectura\\Taller 2.Net\\InventoryManagement\\InventoryManagement.csproj",
-      "packagesPath": "C:\\Users\\samir\\.nuget\\packages\\",
-      "outputPath": "C:\\arquitectura\\Taller 2.Net\\InventoryManagement\\obj\\",
+      "projectPath": "D:\\U\\Semestre 7\\Arquitectura de software\\Talleres\\Taller 2.NET\\taller2.net\\InventoryManagement.csproj",
+      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+      "outputPath": "D:\\U\\Semestre 7\\Arquitectura de software\\Talleres\\Taller 2.NET\\taller2.net\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\samir\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3107,7 +3105,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
