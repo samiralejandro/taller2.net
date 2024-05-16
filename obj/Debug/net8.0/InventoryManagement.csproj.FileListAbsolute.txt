@@ -256,3 +256,5 @@ D:\U\Semestre 7\Arquitectura de software\Talleres\Taller 2.NET\taller2.net\obj\D
 D:\U\Semestre 7\Arquitectura de software\Talleres\Taller 2.NET\taller2.net\obj\Debug\net8.0\InventoryManagement.pdb
 D:\U\Semestre 7\Arquitectura de software\Talleres\Taller 2.NET\taller2.net\obj\Debug\net8.0\InventoryManagement.genruntimeconfig.cache
 D:\U\Semestre 7\Arquitectura de software\Talleres\Taller 2.NET\taller2.net\obj\Debug\net8.0\ref\InventoryManagement.dll
+D:\U\Semestre 7\Arquitectura de software\Talleres\Taller 2.NET\taller2.net\bin\Debug\net8.0\MySqlConnector.dll
+D:\U\Semestre 7\Arquitectura de software\Talleres\Taller 2.NET\taller2.net\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll
