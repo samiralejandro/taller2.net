@@ -6,7 +6,8 @@ taller2.net es una aplicación .NET que gestiona productos y su inventario. Perm
 
 - .NET 8.0 SDK o superior
 - Base de datos MySQL
-- `ReplenishmentSimulator` (otro proyecto .NET que simula el sistema de reabastecimiento)
+- `Simulador-restablecer-productos` (otro proyecto .NET que simula el sistema de reabastecimiento)
+- [Repositorio Simulador para restablecer productos](https://github.com/davidfer1112/Simulador-restablecer-productos)
 
 ## Configuración
 
