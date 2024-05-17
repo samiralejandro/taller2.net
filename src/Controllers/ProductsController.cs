@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using App.Data;
 using App.Models;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace App.Controllers
@@ -12,10 +14,15 @@ namespace App.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public ProductsController(ApplicationDbContext context)
+        private const int StockThreshold = 20;
+        private const int StockLimit = 100;
+
+        public ProductsController(ApplicationDbContext context, IHttpClientFactory httpClientFactory)
         {
             _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
         // GET: Products
@@ -93,6 +100,39 @@ namespace App.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // PUT: Products/5/replenish
+        [HttpPut("{id}/replenish")]
+        public async Task<IActionResult> ReplenishProduct(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+
+            // para solo reestablecer el stock si el stock es menor al límite
+            if (product.Stock >= StockLimit)
+            {
+                return BadRequest(new { message = "Las existencias son suficientes, no es necesario reponerlas" });
+            }
+
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.PostAsync("http://localhost:5046/replenishment", null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                product.Stock = StockLimit;
+                _context.Entry(product).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Existencias reabastecidas con éxito" });
+            }
+            else
+            {
+                return StatusCode(500, new { message = "Error en reponer existencias" });
+            }
         }
 
         private bool ProductExists(int id)
