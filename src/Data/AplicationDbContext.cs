@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using App.Models;
+using Taller2Net.Models;
 
-namespace App.Data
+namespace Taller2Net.Data
 {
     public class ApplicationDbContext : DbContext
     {
@@ -10,6 +10,6 @@ namespace App.Data
         {
         }
 
-        public DbSet<Product> Products { get; set; }
+        public DbSet<Product> Productos { get; set; }
     }
 }

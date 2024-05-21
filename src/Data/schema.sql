@@ -1,3 +1,7 @@
+/*-- Selecciona la base de datos
+USE tallernetdos;
+
+-- Crear la tabla Products
 CREATE TABLE Products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(100) NOT NULL,
@@ -6,8 +10,7 @@ CREATE TABLE Products (
     Stock INT NOT NULL DEFAULT 0
 );
 
-
-
-INSERT INTO Products (Name, price, Description, stock) VALUES ('Camiseta', 20.99, 'Camiseta de algodón', 100);
-INSERT INTO Products (Name, price, stock) VALUES ('Pantalón', 39.99, 50);
-INSERT INTO Products (Name, price, Description, stock) VALUES ('Zapatillas', 59.99, 'Zapatillas deportivas', 75);
+-- Insertar datos iniciales
+INSERT INTO Products (Name, Price, Description, Stock) VALUES ('Camiseta', 20.99, 'Camiseta de algodón', 100);
+INSERT INTO Products (Name, Price, Stock) VALUES ('Pantalón', 39.99, 50);
+INSERT INTO Products (Name, Price, Description, Stock) VALUES ('Zapatillas', 59.99, 'Zapatillas deportivas', 75);

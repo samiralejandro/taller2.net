@@ -1,69 +1,113 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using App.Data;
-using App.Models;
-using System.Collections.Generic;
+using Taller2Net.Data;
+using Taller2Net.Models;
+using Taller2Net.Services;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace App.Controllers
+namespace Taller2Net.Controllers;
+
+public class ProductsController : Controller
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class ProductsController : ControllerBase
+    private readonly ApplicationDbContext _context;
+    private readonly ServicioInventario _servicioInventario;
+
+
+    public ProductsController(ApplicationDbContext context, ServicioInventario servicioInventario)
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IHttpClientFactory _httpClientFactory;
+        _context = context;
+        _servicioInventario = servicioInventario;
+    }
 
-        private const int StockThreshold = 20;
-        private const int StockLimit = 100;
-
-        public ProductsController(ApplicationDbContext context, IHttpClientFactory httpClientFactory)
+      // GET: Products
+        public async Task<IActionResult> Index()
         {
-            _context = context;
-            _httpClientFactory = httpClientFactory;
+            // Llamar al servicio de reabastecimiento
+            await _servicioInventario.ReordenarProductosAsync();
+
+            // Obtener la lista de productos después del reabastecimiento
+            var productos = await _context.Productos.ToListAsync();
+            return View(productos);
         }
 
-        // GET: Products
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+    // GET: Products
+ 
+
+    // GET: Products/Details/5
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null)
         {
-            return await _context.Products.ToListAsync();
+            return NotFound();
         }
 
-        // GET: Products/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        var product = await _context.Productos
+            .FirstOrDefaultAsync(m => m.Id == id);
+        if (product == null)
         {
-            var product = await _context.Products.FindAsync(id);
-
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return product;
+            return NotFound();
         }
 
-        // PUT: Products/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, Product product)
+        return View(product);
+    }
+
+    // GET: Products/Create
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    // POST: Products/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create([Bind("Id,Name,Quantity,Price,ReorderLevel")] Product product)
+    {
+        if (ModelState.IsValid)
         {
-            if (id != product.Id)
-            {
-                return BadRequest();
-            }
+            _context.Add(product);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+        return View(product);
+    }
 
-            _context.Entry(product).State = EntityState.Modified;
+    // GET: Products/Edit/5
+    public async Task<IActionResult> Edit(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
 
+        var product = await _context.Productos.FindAsync(id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+        return View(product);
+    }
+
+    // POST: Products/Edit/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Quantity,Price,ReorderLevel")] Product product)
+    {
+        if (id != product.Id)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
             try
             {
+                _context.Update(product);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(id))
+                if (!ProductExists(product.Id))
                 {
                     return NotFound();
                 }
@@ -72,72 +116,42 @@ namespace App.Controllers
                     throw;
                 }
             }
-
-            return NoContent();
+            return RedirectToAction(nameof(Index));
         }
+        return View(product);
+    }
 
-        // POST: Products
-        [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+    // GET: Products/Delete/5
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id == null)
         {
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+            return NotFound();
         }
 
-        // DELETE: Products/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(int id)
+        var product = await _context.Productos
+            .FirstOrDefaultAsync(m => m.Id == id);
+        if (product == null)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return NotFound();
         }
 
-        // PUT: Products/5/replenish
-        [HttpPut("{id}/replenish")]
-        public async Task<IActionResult> ReplenishProduct(int id)
-        {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+        return View(product);
+    }
 
+    // POST: Products/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var product = await _context.Productos.FindAsync(id);
+        _context.Productos.Remove(product);
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
 
-            // para solo reestablecer el stock si el stock es menor al límite
-            if (product.Stock >= StockLimit)
-            {
-                return BadRequest(new { message = "Las existencias son suficientes, no es necesario reponerlas" });
-            }
-
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.PostAsync("http://localhost:5046/replenishment", null);
-
-            if (response.IsSuccessStatusCode)
-            {
-                product.Stock = StockLimit;
-                _context.Entry(product).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-                return Ok(new { message = "Existencias reabastecidas con éxito" });
-            }
-            else
-            {
-                return StatusCode(500, new { message = "Error en reponer existencias" });
-            }
-        }
-
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.Id == id);
-        }
+    private bool ProductExists(int id)
+    {
+        return _context.Productos.Any(e => e.Id == id);
     }
 }
