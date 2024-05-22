@@ -1,4 +1,4 @@
-/*-- Selecciona la base de datos
+/*-- Seleccionar la base de datos
 USE tallernetdos;
 
 -- Crear la tabla Products
