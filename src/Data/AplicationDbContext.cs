@@ -11,5 +11,12 @@ namespace Taller2Net.Data
         }
 
         public DbSet<Product> Productos { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Product>().ToTable("productos");
+        }
     }
 }
